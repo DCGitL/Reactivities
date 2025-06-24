@@ -64,6 +64,7 @@ axios.get<Activity[]>("https://localhost:5001/api/activities",  { signal: contro
     setActivities(activities.filter(activity => activity.id !== id));
    
     console.log('Deleted activity with id:', id);
+    handleCancelSelectActivity();
   }
   return (
     <>
