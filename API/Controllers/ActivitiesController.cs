@@ -1,51 +1,50 @@
+using Application.Activities.Command;
+using Application.Activities.Queries;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 
 namespace API.Controllers;
 
-public class ActivitiesController(AppDbContext context) : BaseApiController
+public class ActivitiesController : BaseApiController
 {
     [HttpGet]
-    public async Task<IActionResult> GetActivities()
+    public async Task<IActionResult> GetActivities(CancellationToken cancellationToken)
     {
-        var activities = await context.Activities.ToListAsync();
+        var activities = await Mediator.Send(new GetActivityList.Query(), cancellationToken);  // context.Activities.ToListAsync();
         return Ok(activities);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetActivityDetail(string id)
+    public async Task<IActionResult> GetActivityDetail(string id, CancellationToken cancellationToken)
     {
-        var activity = await context.Activities.FindAsync(id);
-        if (activity == null) return NotFound();
+        var activity = await Mediator.Send(new GetActivityDetails.Query { Id = id }, cancellationToken); // context.Activities.FindAsync(id);
+
         return Ok(activity);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateActivity(Activity activity)
+    public async Task<IActionResult> CreateActivity(Activity activity, CancellationToken cancellationToken)
     {
-        context.Activities.Add(activity);
-        await context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetActivityDetail), new { id = activity.Id }, activity);
+        var resultId = await Mediator.Send(new CreateActivity.Command { Activity = activity }, cancellationToken); // context.Activities.AddAsync(activity);
+        return CreatedAtAction(nameof(GetActivityDetail), new { id = resultId }, activity);
+
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateActivity(Guid id, Activity activity)
+    public async Task<IActionResult> UpdateActivity(string id, Activity activity, CancellationToken cancellationToken)
     {
+        if (id != activity.Id) return BadRequest("Activity ID mismatch");
 
-        context.Entry(activity).State = EntityState.Modified;
-        await context.SaveChangesAsync();
+        await Mediator.Send(new EditActivity.Command { Activity = activity }, cancellationToken); // context.Activities.Update(activity);
+
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteActivity(Guid id)
+    public async Task<IActionResult> DeleteActivity(string id, CancellationToken cancellationToken)
     {
-        var activity = await context.Activities.FindAsync(id);
-        if (activity == null) return NotFound();
-        context.Activities.Remove(activity);
-        await context.SaveChangesAsync();
-        return NoContent();
+        await Mediator.Send(new DeleteActivity.Command { Id = id }, cancellationToken); // var activity = await context.Activities.FindAsync(id);
+
+        return Ok();
     }
 }
