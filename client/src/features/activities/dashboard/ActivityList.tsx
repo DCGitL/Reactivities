@@ -1,21 +1,19 @@
 import { Box } from '@mui/material'
 
 import ActivityCard from './ActivityCard';
+import { useActivities } from '../../../lib/types/hooks/useActivities';
+import Spinner from '../../../util/Spinner';
 
-type Props= {
-    activities: Activity[];
-    handleViewClick: (id: string) => void;
- 
-}
-export default function ActivityList({activities,handleViewClick }: Props) {
+
+export default function ActivityList() {
+  const {activities, isPending} = useActivities();
+  if(!activities || isPending) return <Spinner/>   // <Typography>Loading..</Typography>
 
 
   return (
    <Box sx={{display: 'flex', flexDirection: 'column', gap: 3}}>
         {activities.map((activity) => ( 
-          <ActivityCard  
-          handleSelectedViewClick = {()=> handleViewClick(activity.id)} key={activity.id} activity={activity}
-         
+          <ActivityCard  key={activity.id} activity={activity}    
           />))}
         
    </Box>

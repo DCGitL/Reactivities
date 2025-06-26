@@ -3,17 +3,28 @@ import agent from "../api/agent";
 
 
 
+export  const useData = <T>(responsePath: string, id?: string | number) => {
 
-export  const useData = <T>(responsePath: string) => {
-    
+    const  controller = new AbortController();
     const queryClient = useQueryClient();
-
-    const {data: data, isPending} = useQuery({
+       
+    const {data: items, isPending} = useQuery({
+      
         queryKey: [responsePath],
         queryFn: async () => {
-          const { data } = await agent.get<T[]>(`/${responsePath}`);
+          const { data } = await agent.get<T[]>(`/${responsePath}`, {signal: controller.signal});
           return data;
-        }});
+        }     
+      });
+
+    const {data: item, isLoading: isLoadingItem} = useQuery({
+      queryKey: [responsePath, id],
+      queryFn: async () => {
+        const {data} = await agent.get<T>(`/${responsePath}/${id}`, {signal: controller.signal});
+        return data;
+      },
+       enabled: !!id
+    });
             
     const updateData = useMutation({
       mutationFn:  async (activity: T & {id: string | number}) => {
@@ -29,12 +40,14 @@ export  const useData = <T>(responsePath: string) => {
 
     const createData = useMutation({
       mutationFn:  async (activity: T) => {
-        await agent.post(`/${responsePath}`, activity);
+       const {data} =  await agent.post(`/${responsePath}`, activity);
+       return data;
        },
        onSuccess: async () =>{
         await queryClient.invalidateQueries({
           queryKey: [responsePath]
-        });
+        },
+      );
        }
  
     });
@@ -51,7 +64,15 @@ export  const useData = <T>(responsePath: string) => {
       });
 
 
-    return { data, isPending, updateData, createData, deleteData};
+    return   { 
+              items, 
+              item, 
+              isLoadingItem,
+              isPending,
+              updateData,
+              createData,
+              deleteData}
   };
+
 
   

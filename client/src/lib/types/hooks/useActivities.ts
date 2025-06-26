@@ -1,16 +1,27 @@
 
 import { useData } from "./useData";
 
-export  const useActivities = () => {
+export  const useActivities = (id?: string | number) => {
 
-   const { data, isPending, updateData, createData, deleteData } = useData<Activity>('activities');
+   const { 
+          items,
+          item,
+          isLoadingItem, 
+          isPending,
+          updateData,
+            createData,
+            deleteData } = useData<Activity>('activities', id);
 
-  const activities = data,  
-        updateActivity = updateData, 
-        createActivity = createData, 
-        deleteActivity = deleteData;  
-
-    return { activities, isPending, updateActivity, createActivity, deleteActivity};
+  return {
+          activities : items,  
+          activity : item,
+          isPending: isPending,
+          isLoadingAcivity : isLoadingItem,
+          updateActivity : updateData, 
+          createActivity : createData, 
+          deleteActivity :deleteData
+      };
+   
   };
 
   
