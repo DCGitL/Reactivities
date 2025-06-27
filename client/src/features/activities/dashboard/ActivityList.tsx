@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 
 import ActivityCard from './ActivityCard';
-import { useActivities } from '../../../lib/types/hooks/useActivities';
+import { useActivities } from '../../../lib/hooks/useActivities';
 import Spinner from '../../../util/Spinner';
 
 

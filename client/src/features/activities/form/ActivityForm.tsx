@@ -1,5 +1,5 @@
 import { Box, Button, Paper, TextField, Typography } from '@mui/material'
-import { useActivities } from '../../../lib/types/hooks/useActivities';
+import { useActivities } from '../../../lib/hooks/useActivities';
 import { useNavigate, useParams } from 'react-router';
 import Spinner from '../../../util/Spinner';
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import Config from "../../../util/Config";
+import Config from "../../util/Config";
 
 const sleep = (delay: number)=> {
     return new Promise((resolve) =>{
