@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import agent from "../api/agent";
+import { useLocation } from "react-router";
 
 
 
@@ -7,14 +8,16 @@ export  const useData = <T>(responsePath: string, id?: string | number) => {
 
     const  controller = new AbortController();
     const queryClient = useQueryClient();
-       
+    const location = useLocation();   
     const {data: items, isPending} = useQuery({
       
         queryKey: [responsePath],
         queryFn: async () => {
           const { data } = await agent.get<T[]>(`/${responsePath}`, {signal: controller.signal});
           return data;
-        }     
+        },
+       // staleTime: 1000 * 60 * 5,    //this is the amount of time the data will be cached option 1
+        enabled: !id && location.pathname === '/activities' // this is another option to only enable when path is activities
       });
 
     const {data: item, isLoading: isLoadingItem} = useQuery({
