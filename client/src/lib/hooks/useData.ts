@@ -42,7 +42,7 @@ export  const useData = <T>(responsePath: string, id?: string | number) => {
     });
 
     const createData = useMutation({
-      mutationFn:  async (activity: T) => {
+      mutationFn:  async (activity: T & {id: string | number}) => {
        const {data} =  await agent.post(`/${responsePath}`, activity);
        return data;
        },

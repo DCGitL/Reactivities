@@ -18,7 +18,6 @@ agent.interceptors.request.use(config =>{
 
 agent.interceptors.response.use( async (response) => {
     try{
-        console.log('interceptor', response);
         await sleep(1000); // Simulate a delay for all requests
         return response;
 

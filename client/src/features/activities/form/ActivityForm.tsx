@@ -35,8 +35,8 @@ export default function ActivityForm() {
         else {
            createActivity.mutate(data as unknown as Activity,
             {
-                onSuccess: (data) => {
-                     navigate(`/activities/${data.id}`)
+                onSuccess: (id) => {
+                     navigate(`/activities/${id}`)
                 }
             }
            );
