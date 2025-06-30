@@ -1,11 +1,12 @@
 using System;
+using Application.Activities.DTOs;
 using Domain;
 
 namespace Application.Core;
 
 public static class MappingProfileExtensions
 {
-    public static void ToExistingActivity(this Activity existingActivity, Activity Activity)
+    public static void ToExistingActivity(this Activity existingActivity, EditActivityDto Activity)
     {
         if (existingActivity == null) throw new ArgumentNullException(nameof(existingActivity));
 
@@ -21,23 +22,46 @@ public static class MappingProfileExtensions
         existingActivity.Latitude = Activity.Latitude;
 
     }
-    public static void ToExistingActivityList(this List<Activity> sourceActivities, List<Activity> Activities)
-    {
-        if (sourceActivities == null) throw new ArgumentNullException(nameof(sourceActivities));
-        if (Activities == null) throw new ArgumentNullException(nameof(Activities));
 
-        foreach (var sourceActivity in sourceActivities)
+
+    public static CreateActivityDto ToDto(this Activity item)
+    {
+        return new CreateActivityDto
         {
-            var targetActivity = Activities.FirstOrDefault(a => a.Id == sourceActivity.Id);
-            if (targetActivity != null)
-            {
-                sourceActivity.ToExistingActivity(targetActivity);
-            }
-            else
-            {
-                Activities.Add(sourceActivity);
-            }
-        }
+
+            Category = item.Category,
+            City = item.City,
+            Date = item.Date,
+            Description = item.Description,
+            Title = item.Title,
+            Venue = item.Venue,
+            Latitude = item.Latitude,
+            Longitude = item.Longitude,
+
+
+        };
+    }
+
+    public static List<CreateActivityDto> ToDto(this List<Activity> items)
+    {
+        return items.Select(item => ToDto(item)).ToList();
+    }
+
+    public static Activity FromDto(this CreateActivityDto item)
+    {
+        return new Activity
+        {
+
+            Category = item.Category,
+            City = item.City,
+            Description = item.Description,
+            Title = item.Title,
+            Venue = item.Venue,
+            Date = item.Date,
+            Latitude = item.Latitude,
+            IsCancelled = default!,
+            Longitude = item.Longitude,
+        };
 
     }
 
