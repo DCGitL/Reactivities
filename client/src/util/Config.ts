@@ -1,8 +1,8 @@
 
 
 const Config = {
-      userBaseURL : import.meta.env.VITE_BASE_URL,
-     
+      userBaseURL: import.meta.env.VITE_BASE_URL as string,
+      userLocationBaseURL: import.meta.env.VITE_BASE_LOCATION as string
 } 
 
 
