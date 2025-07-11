@@ -1,8 +1,10 @@
 
+
+import { useAccount } from "./useAccount";
 import { useData } from "./useData";
 
 export  const useActivities = (id?: string | number) => {
-
+   const {currentUser} = useAccount();
    const { 
           items,
           item,
@@ -10,7 +12,7 @@ export  const useActivities = (id?: string | number) => {
           isPending,
           updateData,
             createData,
-            deleteData } = useData<Activity>('activities', id);
+            deleteData } = useData<Activity>('activities', id, currentUser);
 
   return {
           activities : items,  

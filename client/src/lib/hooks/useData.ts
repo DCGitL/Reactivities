@@ -4,7 +4,7 @@ import { useLocation } from "react-router";
 
 
 
-export  const useData = <T>(responsePath: string, id?: string | number) => {
+export  const useData = <T>(responsePath: string, id?: string | number, currentUser?: User ) => {
 
     const  controller = new AbortController();
     const queryClient = useQueryClient();
@@ -17,7 +17,7 @@ export  const useData = <T>(responsePath: string, id?: string | number) => {
           return data;
         },
        // staleTime: 1000 * 60 * 5,    //this is the amount of time the data will be cached option 1
-        enabled: !id && location.pathname === '/activities' // this is another option to only enable when path is activities
+        enabled: !id && location.pathname === `/${responsePath}` && !!currentUser //'/activities' // this is another option to only enable when path is activities
       });
 
     const {data: item, isLoading: isLoadingItem} = useQuery({
@@ -26,7 +26,7 @@ export  const useData = <T>(responsePath: string, id?: string | number) => {
         const {data} = await agent.get<T>(`/${responsePath}/${id}`, {signal: controller.signal});
         return data;
       },
-       enabled: !!id
+       enabled: !!id && !!currentUser
     });
             
     const updateData = useMutation({

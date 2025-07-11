@@ -12,6 +12,7 @@ const sleep = (delay: number)=> {
 }
 const agent = axios.create({
   baseURL: Config.userBaseURL,
+  withCredentials: true
 });
 agent.interceptors.request.use(config =>{
     store.uiStore.isBusy();

@@ -10,8 +10,14 @@
     latitude: number
     longitude: number
   }
+  type User = {
+    id: string,
+    email: string,
+    displayName: string,
+    imageUrl?: string
+  }
 
-  export interface LocationIQSuggestion  {
+   interface LocationIQSuggestion  {
     place_id: string
     osm_id: string
     osm_type: string
@@ -27,7 +33,7 @@
     address: LocationIQAddress
   }
   
-  export interface  LocationIQAddress {
+   interface  LocationIQAddress {
     name: string
     city?: string
     county: string

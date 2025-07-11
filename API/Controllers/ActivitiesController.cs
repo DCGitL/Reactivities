@@ -1,15 +1,13 @@
 using Application.Activities.Command;
 using Application.Activities.DTOs;
 using Application.Activities.Queries;
-using Domain;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 public class ActivitiesController : BaseApiController
 {
-    [AllowAnonymous]
+
     [HttpGet]
     public async Task<IActionResult> GetActivities(CancellationToken cancellationToken)
     {
@@ -17,7 +15,7 @@ public class ActivitiesController : BaseApiController
         var activities = await Mediator.Send(new GetActivityList.Query(), cancellationToken);  // context.Activities.ToListAsync();
         return Ok(activities);
     }
-    [Authorize]
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetActivityDetail(string id, CancellationToken cancellationToken)
     {
