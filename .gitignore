@@ -487,3 +487,6 @@ API/appsettings.json
 API/reactivities.db
 client/.env.development
 client/.env.production
+API/migration.sql
+client/.env.development
+client/.env.production
