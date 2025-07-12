@@ -1,6 +1,7 @@
 using Application.Activities.Command;
 using Application.Activities.DTOs;
 using Application.Activities.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -34,9 +35,10 @@ public class ActivitiesController : BaseApiController
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateActivity(string id, EditActivityDto activity, CancellationToken cancellationToken)
+    [Authorize(Policy = "IsActivityHost")]
+    public async Task<IActionResult> EditActivity(string id, EditActivityDto activity, CancellationToken cancellationToken)
     {
-        // if (id != activity.Id) return BadRequest("Activity ID mismatch");
+        if (id != activity.Id) return BadRequest("Activity ID mismatch");
 
         var result = await Mediator.Send(new EditActivity.Command { ActivityDto = activity }, cancellationToken); // context.Activities.Update(activity);
 
@@ -44,10 +46,18 @@ public class ActivitiesController : BaseApiController
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Policy = "IsActivityHost")]
     public async Task<IActionResult> DeleteActivity(string id, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(new DeleteActivity.Command { Id = id }, cancellationToken); // var activity = await context.Activities.FindAsync(id);
 
         return HandleResult(result, VerbActions.Delete);
+    }
+
+    [HttpPost("{id}/attend")]
+    public async Task<IActionResult> Attend(string id)
+    {
+        var result = await Mediator.Send(new UpdateAttendance.Command { Id = id });
+        return HandleResult(result, VerbActions.Post);
     }
 }
