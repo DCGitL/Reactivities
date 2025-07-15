@@ -1,4 +1,4 @@
-import { Grid2, Typography } from "@mui/material";
+import { Grid2 } from "@mui/material";
 import { useParams } from "react-router";
 import { useActivities } from "../../../lib/hooks/useActivities";
 import Spinner from "../../../util/Spinner";
@@ -14,18 +14,18 @@ export default function ActivityDetailPage() {
     const {id} = useParams();
     const {activity, isLoadingAcivity} = useActivities(id);
      if(isLoadingAcivity) return <Spinner/>
-    if (!activity) return <Typography>Activity not found</Typography>; // Ensure the activity exists before rendering
+ 
 
   return (
 
      <Grid2 container spacing={3}>
         <Grid2 size={8}>
-            <ActivityDetailsHeader activity={activity}/>
-            <ActivityDetailsInfo activity = {activity}/>
+            <ActivityDetailsHeader activity={activity as Activity}/>
+            <ActivityDetailsInfo activity = {activity as Activity}/>
             <ActivityDetailsChat/>
         </Grid2>
         <Grid2 size={4}>
-           <ActivityDetailsSideBar/>
+           <ActivityDetailsSideBar activity={activity as Activity}/>
         </Grid2>
      </Grid2>
 
