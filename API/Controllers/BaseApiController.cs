@@ -12,18 +12,21 @@ namespace API.Controllers
         protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>()
             ?? throw new InvalidOperationException("Mediator service is not registered.");
 
-        protected IActionResult HandleResult<T>(Result<T> result, VerbActions actions)
+        protected IActionResult HandleResult<T>(Result<T> result, VerbActions actions, string createdAt = "GetActivityDetail")
         {
             if (!result.IsSuccess && result.Code == StatusCodes.Status404NotFound)
             {
                 return NotFound();
             }
-            if ((result.IsSuccess && result.Value != null) && (actions == VerbActions.Get) || actions == VerbActions.Delete)
+            if ((result.IsSuccess && result.Value != null) && ((actions == VerbActions.Get) || actions == VerbActions.Delete))
             {
                 return Ok(result.Value);
             }
-            if ((result.IsSuccess && result.Value != null) && actions == VerbActions.Post)
-                return CreatedAtAction("GetActivityDetail", new { id = result.Value }, result.Value);
+            if ((result.IsSuccess && result.Value != null) && actions == VerbActions.Post && createdAt == "GetActivityDetail")
+                return CreatedAtAction(createdAt, new { id = result.Value }, result.Value);
+            if ((result.IsSuccess && result.Value != null) && actions == VerbActions.Post && createdAt != "GetActivityDetail")
+                return Ok(result.Value);
+
             if ((result.IsSuccess && result.Value != null) && actions == VerbActions.Put)
                 return NoContent();
 
