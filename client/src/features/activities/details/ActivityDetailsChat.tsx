@@ -1,7 +1,11 @@
 import { Box, Typography, Card, CardContent, TextField, Avatar } from "@mui/material";
 import { Link } from "react-router";
 
-export default function ActivityDetailsChat() {
+type Props ={
+    activity: Activity
+}
+
+export default function ActivityDetailsChat({activity}: Props) {
     return (
         <>
             <Box
@@ -30,11 +34,11 @@ export default function ActivityDetailsChat() {
 
                     <Box>
                         <Box sx={{ display: 'flex', my: 2 }}>
-                            <Avatar src={'/images/user.png'} alt={'user image'} sx={{ mr: 2 }} />
+                            <Avatar src={activity.hostImageUrl || '/images/user.png'} alt={'user image'} sx={{ mr: 2 }} />
                             <Box display='flex' flexDirection='column'>
                                 <Box display='flex' alignItems='center' gap={3}>
                                     <Typography component={Link} to={`/profiles/username`} variant="subtitle1" sx={{ fontWeight: 'bold', textDecoration: 'none' }}>
-                                        Bob
+                                        {activity.hostDisplayName}
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary">
                                         2 hours ago

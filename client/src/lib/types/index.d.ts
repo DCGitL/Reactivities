@@ -14,6 +14,7 @@
     isHost: boolean
     hostId: string
     hostDisplayName: string
+    hostImageUrl: string
   }
 
   type Profile = {
@@ -27,6 +28,11 @@
     email: string,
     displayName: string,
     imageUrl?: string
+  }
+
+  type Photo = {
+    id: string ,
+    url: string 
   }
 
    interface LocationIQSuggestion  {
