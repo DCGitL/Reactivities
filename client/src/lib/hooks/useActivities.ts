@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAccount } from "./useAccount";
 import { useData } from "./useData";
 import agent from "../api/agent";
+import { useMemo } from "react";
 
 export const useActivities = (id?: string | number) => {
 	const { currentUser } = useAccount();
@@ -26,13 +27,16 @@ export const useActivities = (id?: string | number) => {
 		};
 	});
 
-	const host = item?.attendees.find((x) => x.id === item.hostId);
-	const newItem = {
-		...item,
-		isHost: currentUser?.id === item?.hostId,
-		isGoing: item?.attendees?.some((x) => x.id === currentUser?.id),
-		hostImageUrl: host?.imageUrl,
-	};
+	const memoryActivity = useMemo(() => {
+		const host = item?.attendees.find((x) => x.id === item.hostId);
+		const newItem = {
+			...item,
+			isHost: currentUser?.id === item?.hostId,
+			isGoing: item?.attendees?.some((x) => x.id === currentUser?.id),
+			hostImageUrl: host?.imageUrl,
+		};
+		return newItem;
+	}, [item, currentUser]);
 
 	const updateAttendance = useMutation({
 		mutationFn: async (id: string) => {
@@ -94,7 +98,7 @@ export const useActivities = (id?: string | number) => {
 
 	return {
 		activities: newItems,
-		activity: newItem,
+		activity: memoryActivity,
 		isPending: isPending,
 		isLoadingAcivity: isLoadingItem,
 		updateActivity: updateData,

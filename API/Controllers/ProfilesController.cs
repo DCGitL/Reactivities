@@ -54,5 +54,13 @@ namespace API.Controllers
             return HandleResult(result, VerbActions.Get);
 
         }
+
+        [HttpPut]
+        public async Task<IActionResult> EditProfile(EditProfile.Command command, CancellationToken cancellationToken)
+        {
+            var result = await Mediator.Send(command, cancellationToken);
+            return HandleResult(result, VerbActions.Put);
+        }
+
     }
 }
