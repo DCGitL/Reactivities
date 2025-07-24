@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Application.Interfaces;
 using Infrastructure.Security;
 using Infrastructure.Photos;
+using API.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddCors();
+builder.Services.AddSignalR();
 builder.Services.AddMediatR(x =>
 {
     x.RegisterServicesFromAssemblyContaining<GetActivityList.Handler>();
@@ -37,6 +39,12 @@ builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
 builder.Services.AddTransient<ExceptionMiddleware>();
+//Note this configuration must be placed before adding builder.Services.AddIdentityApiEndpoints<User>
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromDays(1);
+    options.SlidingExpiration = true;
+});
 builder.Services.AddIdentityApiEndpoints<User>(opt =>
 {
     opt.User.RequireUniqueEmail = true;
@@ -66,6 +74,7 @@ app.UseAuthorization();
 // Configure the HTTP request pipeline.
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<User>(); //api/login
+app.MapHub<CommentHub>("/comments"); // SignalR hub for comments endpoint
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 try

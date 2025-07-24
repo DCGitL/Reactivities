@@ -7,27 +7,23 @@ import ActivityDetailsInfo from "./ActivityDetailsInfo";
 import ActivityDetailsChat from "./ActivityDetailsChat";
 import ActivityDetailsSideBar from "./ActivityDetailsSideBar";
 
-
-
 export default function ActivityDetailPage() {
- 
-    const {id} = useParams();
-    const {activity, isLoadingAcivity} = useActivities(id);
-     if(isLoadingAcivity) return <Spinner/>
- 
+	const { id } = useParams();
+	const { activity, isLoadingAcivity } = useActivities(id);
+	if (isLoadingAcivity) return <Spinner />;
 
-  return (
-
-     <Grid2 container spacing={3}>
-        <Grid2 size={8}>
-            <ActivityDetailsHeader activity={activity as Activity}/>
-            <ActivityDetailsInfo activity = {activity as Activity}/>
-            <ActivityDetailsChat activity={activity as Activity}/>
-        </Grid2>
-        <Grid2 size={4}>
-           <ActivityDetailsSideBar activity={activity as Activity}/>
-        </Grid2>
-     </Grid2>
-
-  )
+	return (
+		<Grid2
+			container
+			spacing={3}>
+			<Grid2 size={8}>
+				<ActivityDetailsHeader activity={activity as Activity} />
+				<ActivityDetailsInfo activity={activity as Activity} />
+				<ActivityDetailsChat activity={activity as Activity} />
+			</Grid2>
+			<Grid2 size={4}>
+				<ActivityDetailsSideBar activity={activity as Activity} />
+			</Grid2>
+		</Grid2>
+	);
 }

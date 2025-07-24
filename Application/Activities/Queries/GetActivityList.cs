@@ -18,7 +18,6 @@ public class GetActivityList
 
         public async Task<List<ActivityDto>> Handle(Query request, CancellationToken cancellationToken)
         {
-
             return await context.Activities
             .Select(x => new ActivityDto
             {

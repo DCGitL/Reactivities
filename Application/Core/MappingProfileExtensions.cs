@@ -43,6 +43,18 @@ public static class MappingProfileExtensions
 
         };
     }
+    public static CommentDTOs ToDto(this Comment item)
+    {
+        return new CommentDTOs
+        {
+            Id = item.Id,
+            Body = item.Body,
+            CreatedAt = item.CreatedAt,
+            UserId = item.UserId,
+            DisplayName = item.User!.DisplayName!,
+            ImageUrl = item.User.ImageUrl
+        };
+    }
 
     public static List<CreateActivityDto> ToDto(this List<Activity> items)
     {
@@ -78,23 +90,29 @@ public static class MappingProfileExtensions
 
         };
     }
-    public static ActivityDto ToDTOs(this Activity activity)
+    public static ActivityDto ToDTOs(this Activity x)
     {
         return new ActivityDto
         {
-            Id = activity.Id,
-            Category = activity.Category,
-            City = activity.City,
-            Date = activity.Date,
-            Description = activity.Description,
-            Title = activity.Title,
-            Venue = activity.Venue,
-            Attendees = activity.Attendees.Select(x => x.ToUserProfile()).ToList(),
-            HostDisplayName = activity.Attendees.FirstOrDefault(x => x.IsHost)!.User.DisplayName!,
-            HostId = activity.Attendees.FirstOrDefault(x => x.IsHost)!.User.Id,
-            IsCancelled = activity.IsCancelled,
-            Latitude = activity.Latitude,
-            Longitude = activity.Longitude,
+            Id = x.Id,
+            Title = x.Title,
+            Date = x.Date,
+            Description = x.Description,
+            Category = x.Category,
+            IsCancelled = x.IsCancelled,
+            HostDisplayName = x.Attendees.FirstOrDefault(a => a.IsHost) != null ? x.Attendees.FirstOrDefault(a => a.IsHost)!.User.DisplayName! : string.Empty,
+            HostId = x.Attendees.FirstOrDefault(a => a.IsHost) != null ? x.Attendees.FirstOrDefault(a => a.IsHost)!.User.Id : string.Empty,
+            City = x.City,
+            Venue = x.Venue,
+            Latitude = x.Latitude,
+            Longitude = x.Longitude,
+            Attendees = x.Attendees.Select(a => new UserProfile
+            {
+                Id = a.UserId!,
+                DisplayName = a.User.DisplayName!,
+                Bio = a.User.Bio,
+                ImageUrl = a.User.ImageUrl
+            }).ToList()
         };
     }
 
