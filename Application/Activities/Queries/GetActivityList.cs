@@ -1,5 +1,6 @@
 using Application.Activities.DTOs;
 using Application.Core;
+using Application.Interfaces;
 using Application.Profiles.DTOs;
 using Domain;
 using MediatR;
@@ -13,11 +14,12 @@ public class GetActivityList
 
     public class Query : IRequest<List<ActivityDto>> { }
 
-    public class Handler(AppDbContext context) : IRequestHandler<Query, List<ActivityDto>>
+    public class Handler(AppDbContext context, IUserAccessor userAccessor) : IRequestHandler<Query, List<ActivityDto>>
     {
 
         public async Task<List<ActivityDto>> Handle(Query request, CancellationToken cancellationToken)
         {
+            var currentUserID = userAccessor.GetUserId();
             return await context.Activities
             .Select(x => new ActivityDto
             {
@@ -38,7 +40,11 @@ public class GetActivityList
                     Id = a.UserId!,
                     DisplayName = a.User.DisplayName!,
                     Bio = a.User.Bio,
-                    ImageUrl = a.User.ImageUrl
+                    ImageUrl = a.User.ImageUrl,
+                    FollowersCount = a.User.Followers.Count,
+                    FollowingCount = a.User.Followings.Count,
+                    Following = a.User.Followers.Any(f => f.Observer!.Id == currentUserID)
+
                 }).ToList()
             })
             .ToListAsync(cancellationToken);
