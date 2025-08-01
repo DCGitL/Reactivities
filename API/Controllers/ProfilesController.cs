@@ -77,5 +77,14 @@ namespace API.Controllers
         }
 
 
+        [HttpGet("{userId}/activities")]
+        public async Task<IActionResult> GetUserActivities(string userId, string filter)
+        {
+            var result = await Mediator.Send(new GetUserActivities.Query { UserId = userId, Filter = filter });
+            return HandleResult(result, VerbActions.Get);
+
+        }
+
+
     }
 }

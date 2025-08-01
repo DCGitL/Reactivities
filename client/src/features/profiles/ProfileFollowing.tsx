@@ -26,7 +26,7 @@ export default function ProfileFollowing({ activeTab }: Props) {
 						  followings !== undefined &&
 						  followings.length > 0
 						? `People ${profile?.displayName} is following`
-						: `No one is following ${profile?.displayName}`}
+						: `${profile?.displayName} is following no one`}
 				</Typography>
 			</Box>
 			<Divider />

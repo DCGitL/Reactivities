@@ -10,11 +10,11 @@ public class ActivitiesController : BaseApiController
 {
 
     [HttpGet]
-    public async Task<IActionResult> GetActivities(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetActivities([FromQuery] ActivityParams activityParams, CancellationToken cancellationToken)
     {
 
-        var activities = await Mediator.Send(new GetActivityList.Query(), cancellationToken);  // context.Activities.ToListAsync();
-        return Ok(activities);
+        var activities = await Mediator.Send(new GetActivityList.Query { Params = activityParams }, cancellationToken);  // context.Activities.ToListAsync();
+        return HandleResult(activities, VerbActions.Get);
     }
 
     [HttpGet("{id}")]

@@ -491,3 +491,5 @@ API/migration.sql
 client/.env.development
 client/.env.production
 API/migrationscript.sql
+migrationdeployment.sql
+client/.env.development
