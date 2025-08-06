@@ -4,19 +4,25 @@ import agent from "../api/agent";
 import { useNavigate } from "react-router";
 import type { RegisterSchema } from "../schemas/registerSchema";
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 export const useAccount = () => {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
+	const [requestUserInfo, setRequestUserInfo] = useState<boolean>(false);
 
 	const loginUser = useMutation({
 		mutationFn: async (creds: LoginSchema) => {
-			await agent.post("/login?useCookies=true", creds);
+			await agent.post("/account/login?useCookies=true", creds);
 		},
 		onSuccess: async () => {
+			setRequestUserInfo(true);
 			await queryClient.invalidateQueries({
 				queryKey: ["user"],
 			});
+		},
+		onError: () => {
+			setRequestUserInfo(false);
 		},
 	});
 
@@ -24,10 +30,9 @@ export const useAccount = () => {
 		queryKey: ["user"],
 		queryFn: async () => {
 			const response = await agent.get<User>("/account/user-info");
-			console.log("userinfo", response.data);
 			return response.data;
 		},
-		enabled: !queryClient.getQueryData(["user"]),
+		enabled: !queryClient.getQueryData(["user"]) && requestUserInfo,
 		///cache the data instead of making a server call
 	});
 

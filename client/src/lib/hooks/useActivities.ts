@@ -11,8 +11,9 @@ import agent from "../api/agent";
 import { useMemo } from "react";
 import { useLocation } from "react-router";
 import { useStore } from "./useStore";
+import type { FieldValues } from "react-hook-form";
 
-export const useActivities = (id?: string | number) => {
+export const useActivities = (id?: string) => {
 	const {
 		activityStore: { filter, startDate },
 	} = useStore();
@@ -55,7 +56,7 @@ export const useActivities = (id?: string | number) => {
 			);
 			return data;
 		},
-		staleTime: 1000 * 60 * 5, // 5 minutes stale time
+		//	staleTime: 1000 * 60 * 5, // 5 minutes stale time
 		placeholderData: keepPreviousData,
 		initialPageParam: null,
 		getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -105,8 +106,8 @@ export const useActivities = (id?: string | number) => {
 	}, [item, currentUser]);
 
 	const updateData = useMutation({
-		mutationFn: async (activity: Activity & { id: string }) => {
-			await agent.put(`/${activitiesEndPoint}/${activity.id}`, activity);
+		mutationFn: async (activity: FieldValues & { id: string }) => {
+			await agent.put(`/${activitiesEndPoint}/${id}`, activity);
 		},
 		onSuccess: async () => {
 			await queryClient.invalidateQueries({
@@ -116,8 +117,11 @@ export const useActivities = (id?: string | number) => {
 	});
 
 	const createData = useMutation({
-		mutationFn: async (activity: Activity & { id: string }) => {
-			const { data } = await agent.post(`/${activitiesEndPoint}`, activity);
+		mutationFn: async (activity: FieldValues & { id?: string }) => {
+			const { data } = await agent.post<string>(
+				`/${activitiesEndPoint}`,
+				activity
+			);
 			return data;
 		},
 		onSuccess: async () => {
@@ -161,7 +165,7 @@ export const useActivities = (id?: string | number) => {
 					const isAttending = oldActivity.attendees.some(
 						(x) => x.id === currentUser.id
 					);
-					// console.log('setQueryData old',oldActivity);
+
 					return {
 						...oldActivity,
 						isCancelled: isHost

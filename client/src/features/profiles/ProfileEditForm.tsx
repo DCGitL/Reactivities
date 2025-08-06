@@ -32,7 +32,6 @@ export default function ProfileEditForm({ setEditMode }: Props) {
 		await updateEditProfile.mutateAsync(data, {
 			onSuccess: () => setEditMode(false),
 		});
-		console.log("edit profile data", data);
 	};
 	// Reset form with current profile data when profile changes
 	useEffect(() => {

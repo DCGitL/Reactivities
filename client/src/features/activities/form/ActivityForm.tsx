@@ -44,11 +44,11 @@ export default function ActivityForm() {
 		const { location, ...rest } = data;
 		const flattenedData = { ...rest, ...location };
 		try {
-			if (activity?.id) {
+			if (activity && id) {
 				updateActivity.mutate(
-					{ ...activity, ...flattenedData },
+					{ ...activity, ...flattenedData, id: id ?? activity.id ?? "" },
 					{
-						onSuccess: () => navigate(`/activities/${activity.id}`),
+						onSuccess: () => navigate(`/activities/${id}`),
 					}
 				);
 			} else {
@@ -59,8 +59,6 @@ export default function ActivityForm() {
 		} catch (error) {
 			console.log(error);
 		}
-
-		console.log(data);
 	};
 	if (isLoadingAcivity) return <Spinner />;
 

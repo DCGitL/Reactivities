@@ -16,8 +16,7 @@ export default function ProfileHeader() {
 	const { id } = useParams();
 	const { isCurrentUser, profile, updateFollowing } = useProfile(id);
 	if (!profile) return null;
-	console.log("iscurrentUser", isCurrentUser);
-	console.log("header userProfile", profile);
+
 	return (
 		<Paper
 			elevation={3}

@@ -26,7 +26,12 @@ export default function ProfileContent() {
 			p={3}
 			elevation={3}
 			height={500}
-			sx={{ display: "flex", alignItems: "flex-start", borderRadius: 3 }}>
+			sx={{
+				display: "flex",
+				alignItems: "flex-start",
+				overflow: "auto",
+				borderRadius: 3,
+			}}>
 			<Tabs
 				orientation="vertical"
 				value={value}

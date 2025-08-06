@@ -30,8 +30,6 @@ export default function PhotoUploadWidget({ uploadPhoto, loading }: Props) {
 				})
 			)
 		);
-		// Do something with the files
-		console.log(cropperRef);
 	}, []);
 
 	const onCrop = useCallback(() => {

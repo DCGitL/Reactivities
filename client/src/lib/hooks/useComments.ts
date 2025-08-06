@@ -33,13 +33,11 @@ export const useComments = (activityId?: string) => {
 			this.hubConnection.on("LoadComments", (comments: ChatComment[]) => {
 				runInAction(() => {
 					this.comments = comments;
-					console.log("Comments loaded:", this.comments);
 				});
 			});
 			this.hubConnection.on("ReceiveComment", (comment: ChatComment) => {
 				runInAction(() => {
 					this.comments.unshift(comment); // Add new comment to the top
-					console.log("Comment received:", comment);
 				});
 			});
 		},

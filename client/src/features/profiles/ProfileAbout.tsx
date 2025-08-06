@@ -12,7 +12,7 @@ export default function ProfileAbout() {
 	const profile = queryClient.getQueryData<Profile>(["profiles", id]);
 	const isCurrentUser = id === queryClient.getQueryData<User>(["user"])?.id;
 	const [editMode, setEditMode] = useState(false);
-	console.log("ProfileAbout", profile, isCurrentUser);
+
 	return (
 		<Box>
 			<Box

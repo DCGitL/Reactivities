@@ -1,5 +1,5 @@
 using Application.Activities.Queries;
-using Microsoft.EntityFrameworkCore;
+
 using Persistence;
 using FluentValidation;
 using Application.Activities.DTOs;
@@ -14,6 +14,8 @@ using Application.Interfaces;
 using Infrastructure.Security;
 using Infrastructure.Photos;
 using API.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +27,7 @@ builder.Services.AddControllers(opt =>
     opt.Filters.Add(new AuthorizeFilter(policy));
 });
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddCors();
 builder.Services.AddSignalR();
@@ -40,18 +42,29 @@ builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(Valid
 builder.Services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
 builder.Services.AddTransient<ExceptionMiddleware>();
 //Note this configuration must be placed before adding builder.Services.AddIdentityApiEndpoints<User>
+//Note configure the Identity used before setting up the cookie
+//This way you override all the default configuration of the default cookie that is 
+//created by the identity server
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+
+}).AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.AddAuthentication()
+    .AddCookie();
+// Configure cookie auth separately
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    options.LoginPath = "/api/account/login";
+    options.Cookie.Name = "ActivitiesCookie";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.ExpireTimeSpan = TimeSpan.FromDays(1);
     options.SlidingExpiration = true;
-});
-builder.Services.AddIdentityApiEndpoints<User>(opt =>
-{
-    opt.User.RequireUniqueEmail = true;
 
-})
-.AddRoles<IdentityRole>()
-.AddEntityFrameworkStores<AppDbContext>();
+});
+
 builder.Services.AddAuthorization(opt =>
 {
     opt.AddPolicy("IsActivityHost", policy =>
@@ -70,29 +83,33 @@ app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod()
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+app.UseRouting();
 
 // Configure the HTTP request pipeline.
 app.MapControllers();
-app.MapGroup("api").MapIdentityApi<User>(); //api/login
+//app.MapGroup("api"); //.MapIdentityApi<User>(); //api/login
 app.MapHub<CommentHub>("/comments"); // SignalR hub for comments endpoint
-using var scope = app.Services.CreateScope();
-var services = scope.ServiceProvider;
-try
-{
-    // Apply migrations
-    var context = services.GetRequiredService<AppDbContext>();
-    var userManager = services.GetRequiredService<UserManager<User>>();
-    await context.Database.MigrateAsync();
-    // Seed the database with initial data
-    await DbInitializer.SeedDataAsync(context, userManager);
+app.MapFallbackToController("Index", "Fallback");
+// using var scope = app.Services.CreateScope();
+// var services = scope.ServiceProvider;
+//try
+//{
+//    // Apply migrations
+//    //var context = services.GetRequiredService<AppDbContext>();
+//    //var userManager = services.GetRequiredService<UserManager<User>>();
+//    //await context.Database.MigrateAsync();
+//    //// Seed the database with initial data
+//    //await DbInitializer.SeedDataAsync(context, userManager);
 
-}
-catch (Exception ex)
-{
-    // Handle migration errors
-    var logger = services.GetRequiredService<ILogger<Program>>();
-    logger.LogError(ex, "An error occurred during migration or seeding the database.");
-}
+//}
+//catch (Exception ex)
+//{
+//    // Handle migration errors
+//    var logger = services.GetRequiredService<ILogger<Program>>();
+//    logger.LogError(ex, "An error occurred during migration or seeding the database.");
+//}
 
 
 app.Run();

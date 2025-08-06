@@ -58,13 +58,13 @@ export default function ProfileActivities() {
 			<Grid2
 				container
 				size={12}
-				spacing={2}
+				spacing={1}
 				sx={{ marginTop: 2, height: 400, overflow: "auto" }}>
 				{userActivities && userActivities.length > 0 ? (
 					userActivities?.map((userActivity) => (
 						<Grid2
 							key={userActivity.id}
-							size={{ xs: 2 }}>
+							size={{ xs: 6, md: 4 }}>
 							<Link
 								to={`/activities/${userActivity.id}`}
 								style={{ textDecoration: "none" }}>
