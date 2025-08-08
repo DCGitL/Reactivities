@@ -29,7 +29,7 @@ export default function NavBar() {
 							<MenuItem
 								component={NavLink}
 								to="/"
-								sx={{ display: "flex", gap: 2 }}>
+								sx={{ display: { md: "flex", xs: "none" }, gap: 2 }}>
 								<Group fontSize="large" />
 								<Typography
 									variant="h4"
@@ -55,14 +55,14 @@ export default function NavBar() {
 								</Observer>
 							</MenuItem>
 						</Box>
-						<Box sx={{ display: "flex", gap: 2 }}>
+						<Box sx={{ display: { md: "flex", sx: "none" }, gap: 2 }}>
 							<MenuItemLink to="/activities">Activities</MenuItemLink>
 
 							<MenuItemLink to="/counter">Counter</MenuItemLink>
 							<MenuItemLink to="/errors">Errors</MenuItemLink>
 						</Box>
 						<Box
-							display={"flex"}
+							sx={{ display: { md: "flex", sx: "none" } }}
 							alignItems={"center"}>
 							{currentUser ? (
 								<UserMenu />

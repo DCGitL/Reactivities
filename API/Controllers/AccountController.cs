@@ -67,7 +67,7 @@ public class AccountController(SignInManager<User> signInManager, UserManager<Us
     [AllowAnonymous]
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Login(LoginDto loginDto, [FromQuery]bool useCookies, CancellationToken cancellationToken)
+    public async Task<IActionResult> Login(LoginDto loginDto, [FromQuery] bool useCookies, CancellationToken cancellationToken)
     {
         if (useCookies)
         {
@@ -77,17 +77,26 @@ public class AccountController(SignInManager<User> signInManager, UserManager<Us
 
             var isUserLoggedIn = await userManager.CheckPasswordAsync(user, loginDto.Password);
             if (!isUserLoggedIn)
-                return Unauthorized("Invalid password");
+                return Unauthorized("Invalid username or password");
 
             // Use Identity's built-in sign-in method for cookie authentication
             await signInManager.SignInAsync(user, isPersistent: true);
 
-            return Ok("Logged in");
+            if (User.Identity?.IsAuthenticated == false)
+                return Unauthorized("User is not Logged in");
+
+            return Ok(new
+            {
+                user.DisplayName,
+                user.Email,
+                user.Id,
+                user.ImageUrl
+            });
         }
         else
             return Unauthorized("Invalid login options");
 
-      
+
 
 
     }
