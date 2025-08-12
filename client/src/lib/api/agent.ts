@@ -44,7 +44,12 @@ agent.interceptors.response.use(
 				}
 				break;
 			case 401:
-				toast.error("Unauthorized");
+				if (data?.detail === "NotAllowed") {
+					throw new Error(data.detail);
+				} else {
+					const errormessage = data?.detail;
+					toast.error("Unauthorized " + errormessage);
+				}
 				break;
 			case 404:
 				router.navigate("/not-found");

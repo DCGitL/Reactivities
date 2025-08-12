@@ -12,29 +12,40 @@ import LoginForm from "../../../features/account/LoginForm";
 import RequireAuth from "./RequireAuth";
 import RegisterForm from "../../../features/account/RegisterForm";
 import ProfilePage from "../../../features/profiles/ProfilePage";
+import VerifyEmail from "../../../features/account/VerifyEmail";
 
 export const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <App/>,
-        children: [
-            {element: <RequireAuth/>, children: [
-               {path: 'activities', element: <ActivityDashboard/>},        
-               {path: 'activities/:id', element: <ActivityDetailPage/>},
-               {path: 'createactivity', element: <ActivityForm key='create'/>},
-               {path: 'manage/:id', element: <ActivityForm/>},
-               {path: 'profiles/:id', element: <ProfilePage/>},
-            ]},
-            {path: '', element: <HomePage/>},
-            {path: 'counter', element: <Counter/>},
-            {path: 'errors', element: <TestErrors/>},
-            {path: 'not-found', element: <NotFound/>},
-            {path: 'server-error', element: <ServerError/>},
-            {path: 'login', element: <LoginForm/>},
-            {path: 'Register', element: <RegisterForm/>},
-            {path: '*', element: <Navigate replace to='/not-found'/>},
-
-
-        ]
-    }
-])
+	{
+		path: "/",
+		element: <App />,
+		children: [
+			{
+				element: <RequireAuth />,
+				children: [
+					{ path: "activities", element: <ActivityDashboard /> },
+					{ path: "activities/:id", element: <ActivityDetailPage /> },
+					{ path: "createactivity", element: <ActivityForm key="create" /> },
+					{ path: "manage/:id", element: <ActivityForm /> },
+					{ path: "profiles/:id", element: <ProfilePage /> },
+				],
+			},
+			{ path: "", element: <HomePage /> },
+			{ path: "counter", element: <Counter /> },
+			{ path: "errors", element: <TestErrors /> },
+			{ path: "not-found", element: <NotFound /> },
+			{ path: "server-error", element: <ServerError /> },
+			{ path: "login", element: <LoginForm /> },
+			{ path: "Register", element: <RegisterForm /> },
+			{ path: "confirm-email", element: <VerifyEmail /> },
+			{
+				path: "*",
+				element: (
+					<Navigate
+						replace
+						to="/not-found"
+					/>
+				),
+			},
+		],
+	},
+]);

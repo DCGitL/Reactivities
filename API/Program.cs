@@ -2,7 +2,6 @@ using Application.Activities.Queries;
 
 using Persistence;
 using FluentValidation;
-using Application.Activities.DTOs;
 using Application.Activities.Validators;
 using Application.Core;
 using API.Middleware;
@@ -15,7 +14,8 @@ using Infrastructure.Security;
 using Infrastructure.Photos;
 using API.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Infrastructure.EmailServer;
+using Infrastructure.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +41,12 @@ builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
 builder.Services.AddTransient<ExceptionMiddleware>();
+builder.Services.AddFluentEmail("support@techtest.com").AddSmtpSender(
+   host: builder.Configuration.GetValue<string>("EmailSettings:SmtpHost"),
+   port: builder.Configuration.GetValue<int>("EmailSettings: SmtpPort")
+);
+builder.Services.AddTransient<ISmptEmailSender, SmptEmailSender>();
+builder.Services.AddTransient<IEmailSender<User>, EmailSender>();
 //Note this configuration must be placed before adding builder.Services.AddIdentityApiEndpoints<User>
 //Note configure the Identity used before setting up the cookie
 //This way you override all the default configuration of the default cookie that is 
@@ -48,8 +54,10 @@ builder.Services.AddTransient<ExceptionMiddleware>();
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = true;
 
-}).AddEntityFrameworkStores<AppDbContext>();
+}).AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication()
     .AddCookie();

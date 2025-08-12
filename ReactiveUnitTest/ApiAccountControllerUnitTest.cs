@@ -1,11 +1,13 @@
-using System;
+
 using API.Controllers;
 using API.DTOs;
+
 using Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+using Microsoft.Extensions.Configuration;
 using NSubstitute;
 
 namespace ReactiveUnitTest;
@@ -15,6 +17,7 @@ public class ApiAccountControllerUnitTest
     private UserManager<User> _subUserManager;
     private SignInManager<User> _subSignInManager;
     private AccountController _acctController;
+    private IConfiguration _config;
     public ApiAccountControllerUnitTest()
     {
 
@@ -23,7 +26,9 @@ public class ApiAccountControllerUnitTest
                             Substitute.For<IHttpContextAccessor>(),
                             Substitute.For<IUserClaimsPrincipalFactory<User>>(),
                             null, null, null, null);
-        _acctController = new AccountController(_subSignInManager);
+        IEmailSender<User> emailSender = Substitute.For<IEmailSender<User>>();
+        _config = Substitute.For<IConfiguration>();
+        _acctController = new AccountController(_subSignInManager, emailSender, _config);
 
     }
 
