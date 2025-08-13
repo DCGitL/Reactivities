@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import type { RegisterSchema } from "../schemas/registerSchema";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import type { ChangePasswordSchema } from "../schemas/changePasswordSchema";
 
 export const useAccount = () => {
 	const queryClient = useQueryClient();
@@ -83,6 +84,23 @@ export const useAccount = () => {
 		onSuccess: () => toast.success("Email sent - please check your email"),
 	});
 
+	const changePassword = useMutation({
+		mutationFn: async (data: ChangePasswordSchema) => {
+			await agent.post("/account/change-password", data);
+		},
+	});
+	const forgotPassword = useMutation({
+		mutationFn: async (email: string) => {
+			await agent.post("/account/forgot-password", { email });
+		},
+	});
+
+	const resetPassword = useMutation({
+		mutationFn: async (data: ResetPassword) => {
+			await agent.post("/account/reset-password", data);
+		},
+	});
+
 	return {
 		loginUser,
 		currentUser,
@@ -91,5 +109,8 @@ export const useAccount = () => {
 		registerUser,
 		verifyEmail,
 		resendConfirmationEmail,
+		changePassword,
+		forgotPassword,
+		resetPassword,
 	};
 };

@@ -1,20 +1,18 @@
 using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 using System.Text;
 using API.DTOs;
-using Application.Core;
 using Domain;
+using Infrastructure.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.WebEncoders;
 
 namespace API.Controllers;
 
 public class AccountController(SignInManager<User> signInManager,
- IEmailSender<User> emailSender,
+ IEmail emailSender,
 IConfiguration configuration) : BaseApiController
 {
     [AllowAnonymous]
@@ -189,6 +187,70 @@ IConfiguration configuration) : BaseApiController
         ModelState.AddModelError(StatusCodes.Status400BadRequest.ToString(), "Email Confirmation Failed");
         return ValidationProblem();
     }
+
+
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword(ChangePassWordDto changePassWordDto)
+    {
+        var user = await signInManager.UserManager.GetUserAsync(User);
+        if (user is null)
+        {
+            return Unauthorized();
+        }
+
+        var result = await signInManager.UserManager
+        .ChangePasswordAsync(user, changePassWordDto.currentPassword, changePassWordDto.newPassword);
+        if (result.Succeeded)
+        {
+            return Ok();
+        }
+
+        return BadRequest(result.Errors.First().Description);
+
+    }
+    [AllowAnonymous]
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword(ForgotPassWordDto forgotPassWordDto)
+    {
+        var user = await signInManager.UserManager.FindByEmailAsync(forgotPassWordDto.Email);
+        if (user is null || !(await signInManager.UserManager.IsEmailConfirmedAsync(user)))
+        {
+            return BadRequest("Invalid email or email not confirmed.");
+        }
+
+        var tokenResult = await signInManager.UserManager.GeneratePasswordResetTokenAsync(user);
+        var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(tokenResult));
+        var callbackUrl = $"{configuration["ClientApUrl"]}/reset-password?token={token}&email={user.Email}";     // Url.Action("ResetPassword", "Account", new { token, email = user.Email }, Request.Scheme);
+
+        var htmlbody = $"Please reset your password by clicking <a href='{callbackUrl}'>here</a>";
+        await emailSender.SendEmailAsync(user, "Reset Password", htmlbody);
+
+        return Ok("Password reset link sent");
+
+    }
+
+    [AllowAnonymous]
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword(ResetPassWordDto model)
+    {
+        var user = await signInManager.UserManager.FindByEmailAsync(model.Email);
+        if (user is null)
+        {
+            return BadRequest("Invalid Request");
+        }
+
+        var decodetoken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(model.Token));
+        var result = await signInManager.UserManager.ResetPasswordAsync(user, decodetoken, model.NewPassword);
+        if (result.Succeeded)
+        {
+            return Ok("Password reset successful");
+        }
+
+        return BadRequest(result.Errors);
+
+    }
+
     private async Task SendConFirmationEmailAsync(User user, string email)
     {
         var code = await signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);

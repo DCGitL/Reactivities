@@ -3,6 +3,7 @@ using API.Controllers;
 using API.DTOs;
 
 using Domain;
+using Infrastructure.Email;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ public class ApiAccountControllerUnitTest
                             Substitute.For<IHttpContextAccessor>(),
                             Substitute.For<IUserClaimsPrincipalFactory<User>>(),
                             null, null, null, null);
-        IEmailSender<User> emailSender = Substitute.For<IEmailSender<User>>();
+        IEmail emailSender = Substitute.For<IEmail>();
         _config = Substitute.For<IConfiguration>();
         _acctController = new AccountController(_subSignInManager, emailSender, _config);
 
