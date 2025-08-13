@@ -1,11 +1,12 @@
 using System;
 using Domain;
+using FluentEmail.Core.Models;
 using Infrastructure.EmailServer;
 using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Email;
 
-public class EmailSender(ISmptEmailSender smptEmailSender) : IEmailSender<User>
+public class EmailSender(ISmptEmailSender smptEmailSender) : IEmail
 {
     public async Task SendConfirmationLinkAsync(User user, string email, string confirmationLink)
     {
@@ -26,6 +27,21 @@ public class EmailSender(ISmptEmailSender smptEmailSender) : IEmailSender<User>
         };
 
         Console.WriteLine(message);
+
+    }
+
+    public async Task SendEmailAsync(User user, string subject, string htmlBody)
+    {
+        var result = await smptEmailSender.SendEmail(user.Email!, user.DisplayName!, subject, htmlBody);
+        var message = (result.Successful, result.ErrorMessages.Any()) switch
+        {
+            (true, false) => "Email sent successfuly",
+            (false, true) => string.Format("error occured in sending your email {0}", string.Join(" ", result.ErrorMessages)),
+            _ => "Unhandled error occured"
+        };
+
+        Console.WriteLine(message);
+
 
     }
 

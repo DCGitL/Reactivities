@@ -46,7 +46,7 @@ builder.Services.AddFluentEmail("support@techtest.com").AddSmtpSender(
    port: builder.Configuration.GetValue<int>("EmailSettings: SmtpPort")
 );
 builder.Services.AddTransient<ISmptEmailSender, SmptEmailSender>();
-builder.Services.AddTransient<IEmailSender<User>, EmailSender>();
+builder.Services.AddTransient<IEmail, EmailSender>();
 //Note this configuration must be placed before adding builder.Services.AddIdentityApiEndpoints<User>
 //Note configure the Identity used before setting up the cookie
 //This way you override all the default configuration of the default cookie that is 
