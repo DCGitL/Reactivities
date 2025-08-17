@@ -16,6 +16,8 @@ using API.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.EmailServer;
 using Infrastructure.Email;
+using System.Net.Http.Headers;
+using Infrastructure.SocialMedia.Login;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +49,14 @@ builder.Services.AddFluentEmail("support@techtest.com").AddSmtpSender(
 );
 builder.Services.AddTransient<ISmptEmailSender, SmptEmailSender>();
 builder.Services.AddTransient<IEmail, EmailSender>();
+builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddHttpClient("GitHubClient", options =>
+{
+    var tokenBaseUrl = builder.Configuration.GetSection("Authentication:Github:TokenBaseUrl").Value!;
+    options.BaseAddress = new Uri(tokenBaseUrl); //endpoint => /login/oauth/access_token
+    options.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+});
 //Note this configuration must be placed before adding builder.Services.AddIdentityApiEndpoints<User>
 //Note configure the Identity used before setting up the cookie
 //This way you override all the default configuration of the default cookie that is 

@@ -1,4 +1,11 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
+import {
+	Box,
+	Button,
+	Paper,
+	Typography,
+	type SxProps,
+	type Theme,
+} from "@mui/material";
 import type { ReactNode } from "react";
 import {
 	FormProvider,
@@ -15,6 +22,7 @@ type Props<TFormData extends FieldValues> = {
 	submitButtonText: string;
 	resolver?: Resolver<TFormData>;
 	reset?: boolean;
+	apformTheme?: SxProps<Theme>;
 };
 
 export default function AccountFormWrapper<TFormData extends FieldValues>({
@@ -25,6 +33,7 @@ export default function AccountFormWrapper<TFormData extends FieldValues>({
 	submitButtonText,
 	resolver,
 	reset,
+	apformTheme,
 }: Props<TFormData>) {
 	const methods = useForm<TFormData>({ resolver, mode: "onTouched" });
 
@@ -34,21 +43,22 @@ export default function AccountFormWrapper<TFormData extends FieldValues>({
 			methods.reset();
 		}
 	};
+	const apformDefaultTheme: SxProps<Theme> = {
+		display: "flex",
+		flexDirection: "column",
+		p: 3,
+		gap: 3,
+		maxWidth: "md",
+		mx: "auto",
+		borderRadius: 3,
+	};
 
 	return (
 		<FormProvider {...methods}>
 			<Paper
 				component={"form"}
 				onSubmit={methods.handleSubmit(formSubmit)}
-				sx={{
-					display: "flex",
-					flexDirection: "column",
-					p: 3,
-					gap: 3,
-					maxWidth: "md",
-					mx: "auto",
-					borderRadius: 3,
-				}}>
+				sx={apformTheme ?? apformDefaultTheme}>
 				<Box
 					display="flex"
 					alignItems={"center"}
