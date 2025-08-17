@@ -3,18 +3,59 @@ using System.Text;
 using API.DTOs;
 using Domain;
 using Infrastructure.Email;
+using Infrastructure.SocialMedia.Login;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace API.Controllers;
 
 public class AccountController(SignInManager<User> signInManager,
  IEmail emailSender,
-IConfiguration configuration) : BaseApiController
+IConfiguration configuration, ILoginService loginService) : BaseApiController
 {
+
+    [AllowAnonymous]
+    [HttpPost("github-login")]
+    public async Task<IActionResult> LoginWithGithub(string code)
+    {
+        var result = await loginService.GitHubTokenResponse(code);
+        if (result is null)
+        {
+            return BadRequest("Fail to login with github");
+        }
+        var user = await loginService.GetGitHubUser(result);
+        if (user is null)
+        {
+            return BadRequest("Github user is not available for your request");
+        }
+
+        var existingUser = await signInManager.UserManager.FindByEmailAsync(user.Email);
+        if (existingUser is null)
+        {
+            existingUser = new User
+            {
+                Email = user.Email,
+                UserName = user.Email,
+                DisplayName = user.Name,
+                ImageUrl = user.ImageUrl
+            };
+
+            var createdResult = await signInManager.UserManager.CreateAsync(existingUser);
+            if (!createdResult.Succeeded)
+            {
+                return BadRequest("Failed to create user");
+            }
+        }
+        await signInManager.SignInAsync(existingUser, false);
+        return Ok();
+
+    }
+
+
     [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> RegisterUser(RegisterDto registerDto)
