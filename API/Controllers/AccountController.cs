@@ -95,10 +95,11 @@ IConfiguration configuration, ILoginService loginService) : BaseApiController
 
         return Ok(new
         {
-            user.DisplayName,
-            user.Email,
-            user.Id,
-            user.ImageUrl
+             displayName =  user.DisplayName,
+             email =   user.Email,
+             id =   user.Id,
+             imageUrl =   user.ImageUrl,
+             isSocialLogin = string.IsNullOrEmpty(user.PasswordHash)
         });
 
     }
@@ -154,10 +155,11 @@ IConfiguration configuration, ILoginService loginService) : BaseApiController
             {
                 return Ok(new
                 {
-                    user.DisplayName,
-                    user.Email,
-                    user.Id,
-                    user.ImageUrl
+                  displayName =    user.DisplayName,
+                  email =  user.Email,
+                  id =   user.Id,
+                  imageUrl =  user.ImageUrl,
+                  isSocialLogin = string.IsNullOrEmpty(user.PasswordHash)
                 });
             }
 

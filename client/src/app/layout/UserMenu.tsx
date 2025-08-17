@@ -16,6 +16,7 @@ import { Add, Logout, Password } from "@mui/icons-material";
 
 export default function UserMenu() {
 	const { currentUser, logoutUser } = useAccount();
+	console.log(currentUser);
 
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
@@ -71,15 +72,18 @@ export default function UserMenu() {
 					</ListItemIcon>
 					<ListItemText>My Profile</ListItemText>
 				</MenuItem>
-				<MenuItem
-					component={Link}
-					to={`/change-password`}
-					onClick={handleClose}>
-					<ListItemIcon>
-						<Password />
-					</ListItemIcon>
-					<ListItemText>Change Password</ListItemText>
-				</MenuItem>
+				{!currentUser?.isSocialLogin && (
+					<MenuItem
+						component={Link}
+						to={`/change-password`}
+						onClick={handleClose}>
+						<ListItemIcon>
+							<Password />
+						</ListItemIcon>
+						<ListItemText>Change Password</ListItemText>
+					</MenuItem>
+				)}
+
 				<Divider />
 
 				<MenuItem
