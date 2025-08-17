@@ -16,7 +16,6 @@ import { Add, Logout, Password } from "@mui/icons-material";
 
 export default function UserMenu() {
 	const { currentUser, logoutUser } = useAccount();
-	console.log(currentUser);
 
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
