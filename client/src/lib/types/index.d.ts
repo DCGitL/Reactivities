@@ -41,6 +41,7 @@ type User = {
 	email: string;
 	displayName: string;
 	imageUrl?: string;
+	isSocialLogin: boolean;
 };
 
 type Photo = {

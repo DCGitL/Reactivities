@@ -71,15 +71,18 @@ export default function UserMenu() {
 					</ListItemIcon>
 					<ListItemText>My Profile</ListItemText>
 				</MenuItem>
-				<MenuItem
-					component={Link}
-					to={`/change-password`}
-					onClick={handleClose}>
-					<ListItemIcon>
-						<Password />
-					</ListItemIcon>
-					<ListItemText>Change Password</ListItemText>
-				</MenuItem>
+				{!currentUser?.isSocialLogin && (
+					<MenuItem
+						component={Link}
+						to={`/change-password`}
+						onClick={handleClose}>
+						<ListItemIcon>
+							<Password />
+						</ListItemIcon>
+						<ListItemText>Change Password</ListItemText>
+					</MenuItem>
+				)}
+
 				<Divider />
 
 				<MenuItem
