@@ -47,6 +47,7 @@ export const router = createBrowserRouter([
 			{ path: "reset-password", element: <ResetPasswordForm /> },
 			{ path: "loginwrapper", element: <LoginformWithWrapper /> },
 			{ path: "auth-callback", element: <AuthCallback /> },
+
 			{
 				path: "*",
 				element: (

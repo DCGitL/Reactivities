@@ -10,6 +10,8 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Config from "../../util/Config";
 
+import InputPasswordIcon from "../../app/shared/components/InputPasswordIcon";
+
 export default function LoginForm() {
 	const [notVerified, setNotVerified] = useState<boolean>(false);
 	const { loginUser, resendConfirmationEmail } = useAccount();
@@ -24,6 +26,10 @@ export default function LoginForm() {
 	} = useForm<LoginSchema>({
 		mode: "onTouched",
 		resolver: zodResolver(loginSchema),
+		defaultValues: {
+			email: "",
+			password: "",
+		},
 	});
 	const email = watch("email");
 
@@ -79,15 +85,16 @@ export default function LoginForm() {
 				<LockOpen fontSize="large" />
 				<Typography variant="h4">Sign in</Typography>
 			</Box>
-
 			<TextInput
 				label="Email"
+				type="email"
+				id="email"
 				control={control}
 				name="email"
 			/>
-			<TextInput
+			<InputPasswordIcon
 				label="Password"
-				type="password"
+				id="password"
 				control={control}
 				name="password"
 			/>

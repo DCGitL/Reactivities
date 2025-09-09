@@ -88,3 +88,28 @@ interface LocationIQAddress {
 	postcode?: string;
 	house_number?: string;
 }
+interface weatherResponse {
+	weather: WeatherItem[];
+	dt: Date;
+	sys: {
+		country: string;
+		sunrise: number;
+		sunset: number;
+	};
+	main: {
+		temp: number;
+		feels_like: number;
+		temp_min: number;
+		temp_max: number;
+		pressure: number;
+		humidity: number;
+		sea_level?: number;
+		grnd_level?: number;
+	};
+	city?: string;
+}
+interface WeatherItem {
+	main: string;
+	description: string;
+	icon: string;
+}
