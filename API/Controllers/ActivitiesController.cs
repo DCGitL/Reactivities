@@ -1,12 +1,13 @@
 using Application.Activities.Command;
 using Application.Activities.DTOs;
 using Application.Activities.Queries;
+using Infrastructure.Weather.WeatherService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-public class ActivitiesController : BaseApiController
+public class ActivitiesController(IWeatherServiceMonitor weatherServiceMonitor) : BaseApiController
 {
 
     [HttpGet]
@@ -61,4 +62,13 @@ public class ActivitiesController : BaseApiController
         var result = await Mediator.Send(new UpdateAttendance.Command { Id = id });
         return HandleResult(result, VerbActions.Post);
     }
+    [HttpGet("{lat:float}/{lon:float}/weather")]
+    public async Task<IActionResult> GetWeather(float lat, float lon, CancellationToken cancellationToken)
+    {
+        var weatherForcast = await weatherServiceMonitor.GetWeatherForcast(lat, lon, cancellationToken);
+        if (weatherForcast == null) return NotFound("Unable to fetch weather data at the moment");
+        return Ok(weatherForcast);
+
+    }
+
 }

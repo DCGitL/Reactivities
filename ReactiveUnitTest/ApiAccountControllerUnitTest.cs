@@ -4,6 +4,7 @@ using API.DTOs;
 
 using Domain;
 using Infrastructure.Email;
+using Infrastructure.SocialMedia.Login;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,13 @@ namespace ReactiveUnitTest;
 
 public class ApiAccountControllerUnitTest
 {
-    private UserManager<User> _subUserManager;
-    private SignInManager<User> _subSignInManager;
-    private AccountController _acctController;
-    private IConfiguration _config;
+    private readonly UserManager<User> _subUserManager;
+    private readonly SignInManager<User> _subSignInManager;
+    private readonly AccountController _acctController;
+    private readonly IConfiguration configuration;
+
+
+    private readonly ILoginService _logService;
     public ApiAccountControllerUnitTest()
     {
 
@@ -28,8 +32,9 @@ public class ApiAccountControllerUnitTest
                             Substitute.For<IUserClaimsPrincipalFactory<User>>(),
                             null, null, null, null);
         IEmail emailSender = Substitute.For<IEmail>();
-        _config = Substitute.For<IConfiguration>();
-        _acctController = new AccountController(_subSignInManager, emailSender, _config);
+        configuration = Substitute.For<IConfiguration>();
+        _logService = Substitute.For<ILoginService>();
+        _acctController = new AccountController(_subSignInManager, emailSender, configuration, _logService);
 
     }
 

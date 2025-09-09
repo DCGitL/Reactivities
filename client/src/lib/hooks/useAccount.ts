@@ -10,6 +10,7 @@ import type { ChangePasswordSchema } from "../schemas/changePasswordSchema";
 export const useAccount = () => {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
+
 	const [requestUserInfo, setRequestUserInfo] = useState<boolean>(false);
 
 	const { data: currentUser, isLoading: loadingUserInfo } = useQuery({
