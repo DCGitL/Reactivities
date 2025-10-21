@@ -1,3 +1,5 @@
+using Infrastructure.Helper;
+
 namespace Infrastructure.Weather.Models.Response
 {
     public class SysResponse
@@ -10,15 +12,14 @@ namespace Infrastructure.Weather.Models.Response
 
     public static class SysResponseExtensions
     {
-        public static SysResponse ToSysResponse(this Sys sys)
+        public static SysResponse ToSysResponse(this Sys sys, float lonitude, float latitude)
         {
-            var dateTimeSunRise = DateTimeOffset.FromUnixTimeSeconds(sys.sunrise).LocalDateTime;
-            var dateTimeSunSet = DateTimeOffset.FromUnixTimeSeconds(sys.sunset).LocalDateTime;
+
             return new SysResponse
             {
                 Country = sys.country,
-                Sunrise = dateTimeSunRise.ToString("hh:mm:ss tt"),
-                Sunset = dateTimeSunSet.ToString("hh:mm:ss tt")
+                Sunrise = TimeZoneConverter.GetLocalTimeString(sys.sunrise, latitude, lonitude),
+                Sunset = TimeZoneConverter.GetLocalTimeString(sys.sunset, latitude, lonitude)
             };
         }
     }

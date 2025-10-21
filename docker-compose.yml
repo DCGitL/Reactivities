@@ -1,0 +1,32 @@
+services:
+  sqlserver:
+    image: my-custom-sql-server # Or use mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql_server_container_compose
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "ActivitiesEvents262!"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1435:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+  api:
+    image: reactivities_api
+
+    environment:
+      ASPNETCORE_URLS: "https://+:5001"
+      ASPNETCORE_HTTPS_PORT: "5001"
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=EventDb;User ID=sa;Password=ActivitiesEvents262!;TrustServerCertificate=True;"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "testApi123"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/app/aspnetappApi.pfx"
+      EmailSettings:SmtpHost: host.docker.internal
+      EmailSettings:SmtpPort: 25
+    ports:
+      - "5001:5001"
+      - "25:25"
+    depends_on:
+      - sqlserver
+
+volumes:
+  sqlserver_data:

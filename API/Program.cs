@@ -19,6 +19,8 @@ using Infrastructure.Email;
 using System.Net.Http.Headers;
 using Infrastructure.SocialMedia.Login;
 using Infrastructure.Weather.WeatherService;
+using Infrastructure.TimeZone;
+using API.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,10 +61,18 @@ builder.Services.AddHttpClient("GitHubClient", options =>
 
 });
 builder.Services.AddScoped<IWeatherServiceMonitor, WeatherServiceMonitor>();
-builder.Services.AddHttpClient("WeatherSerivceClient", options =>
+builder.Services.AddScoped<IGeoTimeZoneService, GeoTimeZoneService>();
+builder.Services.AddHttpClient(HttpClientName.WeatherSerivceClient, options =>
 {
     var weatherServiceBaseUrl = builder.Configuration.GetSection("WeatherApi:ApiBaseUrl").Value!;
     options.BaseAddress = new Uri(weatherServiceBaseUrl); //endpoint => /login/oauth/access_token
+    options.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+});
+builder.Services.AddHttpClient(HttpClientName.TimezoneServiceClient, options =>
+{
+    var timezoneServiceBaseUrl = builder.Configuration.GetSection("Timezone:ApiBaseUrl").Value!;
+    options.BaseAddress = new Uri(timezoneServiceBaseUrl); //endpoint => /login/oauth/access_token
     options.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
 });
@@ -84,11 +94,11 @@ builder.Services.AddAuthentication()
 // Configure cookie auth separately
 builder.Services.ConfigureApplicationCookie(options =>
 {
-   options.Events.OnRedirectToLogin = context =>
-    {
-        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        return Task.CompletedTask;
-    };
+    options.Events.OnRedirectToLogin = context =>
+     {
+         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+         return Task.CompletedTask;
+     };
     options.LoginPath = "/api/account/login";
     options.Cookie.Name = "ActivitiesCookie";
     options.Cookie.HttpOnly = true;
