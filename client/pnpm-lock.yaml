@@ -59,6 +59,9 @@ importers:
       react-calendar:
         specifier: ^6.0.0
         version: 6.0.0(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      react-countdown:
+        specifier: ^2.3.6
+        version: 2.3.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       react-cropper:
         specifier: ^2.3.3
         version: 2.3.3(react@19.1.1)
@@ -1524,6 +1527,12 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  react-countdown@2.3.6:
+    resolution: {integrity: sha512-ZfX6S08Hb6x6W6eCn1hMDvxPICI/T30fd+gaeVTCR/2cGZ2WJ3f26e4ImNIMX1fHkopJrUdnRpWXP13/D39+gg==}
+    peerDependencies:
+      react: '>= 15'
+      react-dom: '>= 15'
 
   react-cropper@2.3.3:
     resolution: {integrity: sha512-zghiEYkUb41kqtu+2jpX2Ntigf+Jj1dF9ew4lAobPzI2adaPE31z0p+5TcWngK6TvmWQUwK3lj4G+NDh1PDQ1w==}
@@ -3102,6 +3111,12 @@ snapshots:
       warning: 4.0.3
     optionalDependencies:
       '@types/react': 19.1.9
+
+  react-countdown@2.3.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+    dependencies:
+      prop-types: 15.8.1
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
 
   react-cropper@2.3.3(react@19.1.1):
     dependencies:

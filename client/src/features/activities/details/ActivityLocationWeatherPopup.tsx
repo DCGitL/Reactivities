@@ -80,7 +80,20 @@ export default function ActivityLocationWeatherPopup({ long, lat }: Props) {
 				</IconButton>
 				<DialogContent dividers>
 					{weather && (
-						<Typography>Date and time: {formatDate(weather.dt)}</Typography>
+						<Box
+							sx={{
+								display: "flex",
+								flexDirection: "column",
+								alignItems: "start",
+								gap: 2,
+							}}>
+							<Typography>
+								Eastern Date/time: {formatDate(weather.dt)}
+							</Typography>
+							<Typography>
+								{weather.city}- Local Time: {weather.localDateTime}
+							</Typography>
+						</Box>
 					)}
 					<Box
 						sx={{
@@ -98,7 +111,7 @@ export default function ActivityLocationWeatherPopup({ long, lat }: Props) {
 						<Typography
 							variant="body1"
 							gutterBottom>
-							Sunset at: {weather?.sys.sunset.toString()}
+							Sunset at: {weather?.sys.sunset}
 						</Typography>
 					</Box>
 				</DialogContent>

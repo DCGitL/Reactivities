@@ -10,6 +10,9 @@ namespace Infrastructure.Weather.Models.Response
         public SysResponse? sys { get; set; }
         public MainResponse? main { get; set; }
         public string? City { get; set; }
+        public string? LocalDateTime { get; set; }
+        public string? Geolocation { get; set; }
+        public string? StandardTimeZone { get; set; }
 
     }
 

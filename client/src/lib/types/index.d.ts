@@ -107,6 +107,9 @@ interface weatherResponse {
 		grnd_level?: number;
 	};
 	city?: string;
+	localDateTime?: string;
+	localDateTime?: string;
+	standardTimeZone?: string;
 }
 interface WeatherItem {
 	main: string;
