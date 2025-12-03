@@ -3,7 +3,7 @@ import { Box, Button, Grid2, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Cropper, { type ReactCropperElement } from "react-cropper";
-import "cropperjs/dist/cropper.css";
+import "react-cropper/node_modules/cropperjs/dist/cropper.css";
 
 type Props = {
 	uploadPhoto: (file: Blob) => void;

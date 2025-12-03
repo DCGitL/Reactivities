@@ -21,6 +21,7 @@ using Infrastructure.SocialMedia.Login;
 using Infrastructure.Weather.WeatherService;
 using Infrastructure.TimeZone;
 using API.Helper;
+using Application.Repository.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,7 @@ builder.Services.AddMediatR(x =>
     x.RegisterServicesFromAssemblyContaining<GetActivityList.Handler>();
     // x.AddBehavior(typeof(ValidationBehavior<,>));
 });
+builder.Services.AddRepositoryServices();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -121,7 +123,7 @@ var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod()
 .AllowCredentials()
-.WithOrigins("http://localhost:3000", "https://localhost:3000"));
+.WithOrigins("http://localhost:3000", "https://localhost:3000", "https://localhost:5009", "http://localhost:5009"));
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -135,24 +137,24 @@ app.MapControllers();
 //app.MapGroup("api"); //.MapIdentityApi<User>(); //api/login
 app.MapHub<CommentHub>("/comments"); // SignalR hub for comments endpoint
 app.MapFallbackToController("Index", "Fallback");
-// using var scope = app.Services.CreateScope();
-// var services = scope.ServiceProvider;
-//try
-//{
-//    // Apply migrations
-//    //var context = services.GetRequiredService<AppDbContext>();
-//    //var userManager = services.GetRequiredService<UserManager<User>>();
-//    //await context.Database.MigrateAsync();
-//    //// Seed the database with initial data
-//    //await DbInitializer.SeedDataAsync(context, userManager);
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+try
+{
+    // Apply migrations
+    var context = services.GetRequiredService<AppDbContext>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
+    await context.Database.MigrateAsync();
+    // Seed the database with initial data
+    await DbInitializer.SeedDataAsync(context, userManager);
 
-//}
-//catch (Exception ex)
-//{
-//    // Handle migration errors
-//    var logger = services.GetRequiredService<ILogger<Program>>();
-//    logger.LogError(ex, "An error occurred during migration or seeding the database.");
-//}
+}
+catch (Exception ex)
+{
+    // Handle migration errors
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred during migration or seeding the database.");
+}
 
 
 app.Run();

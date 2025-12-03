@@ -33,7 +33,7 @@ public class GetUserActivities
               .AsQueryable();
 
             var today = DateTime.UtcNow;
-
+           
             query = request.Filter switch
             {
                 "past" => query.Where(x => x.Date <= today && x.Attendees.Any(x => x.UserId == request.UserId)),

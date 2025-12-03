@@ -39,7 +39,7 @@ const ActivityDetailsChat = observer(function ActivityDetailsChat({
 			console.log("Error sending comment:", error);
 		}
 	};
-	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+	const handleKeyDown = function (event: React.KeyboardEvent<HTMLDivElement>) {
 		if (event.key === "Enter" && !event.shiftKey) {
 			event.preventDefault();
 			handleSubmit(addComment)();

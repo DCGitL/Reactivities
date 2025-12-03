@@ -7,14 +7,14 @@ namespace Persistence;
 
 public class AppDbContext(DbContextOptions options) : IdentityDbContext<User>(options)
 {
-    public required DbSet<Activity> Activities { get; set; }
+    public DbSet<Activity> Activities { get; set; }
 
-    public required DbSet<ActivityAttendee> ActivityAttendees { get; set; }
+    public DbSet<ActivityAttendee> ActivityAttendees { get; set; }
 
-    public required DbSet<Photo> Photos { get; set; }
+    public DbSet<Photo> Photos { get; set; }
 
-    public required DbSet<Comment> Comments { get; set; }
-    public required DbSet<UserFollowing> UserFollowings { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<UserFollowing> UserFollowings { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -42,7 +42,7 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<User>(op
             x.HasOne(o => o.Target)
            .WithMany(f => f.Followers)
            .HasForeignKey(o => o.TargetId)
-           .OnDelete(DeleteBehavior.Cascade);
+           .OnDelete(DeleteBehavior.NoAction);
 
         });
 

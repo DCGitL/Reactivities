@@ -3,9 +3,9 @@ services:
     image: my-custom-sql-server # Or mcr.microsoft.com/mssql/server:2022-latest if not using a custom image
     container_name: sql_server_container_compose
     environment:
-      ACCEPT_EULA: 'Y'
-      MSSQL_SA_PASSWORD: 'ActivitiesEvents262!' # IMPORTANT: Use a strong password
-      MSSQL_PID: 'Developer'
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "ActivitiesEvents262!" # IMPORTANT: Use a strong password
+      MSSQL_PID: "Developer"
     ports:
       - "1435:1433" # This is where you define the host_port:container_port mapping
     volumes:
