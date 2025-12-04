@@ -25,7 +25,7 @@ jobs:
       CLIENT_APP_URL: ${{ secrets.CLIENT_APP_URL }}
       GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
       GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
-      WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+      WEATHER_API_ENDPOINT: ${{ secrets.WEATHER_API_ENDPOINT }}
       TIMEZONE_API_KEY: ${{ secrets.TIMEZONE_API_KEY }}
 
     steps:
@@ -84,7 +84,7 @@ jobs:
       CLIENT_APP_URL: ${{ secrets.CLIENT_APP_URL }}
       GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
       GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
-      WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+      WEATHER_API_ENDPOINT: ${{ secrets.WEATHER_API_ENDPOINT }}
       TIMEZONE_API_KEY: ${{ secrets.TIMEZONE_API_KEY }}
 
     steps:
