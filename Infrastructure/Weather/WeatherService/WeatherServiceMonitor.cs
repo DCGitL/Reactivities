@@ -16,7 +16,9 @@ namespace Infrastructure.Weather.WeatherService
 
         public async Task<WeatherResponse?> GetWeatherForcast(double lat, double lon, CancellationToken cancellationToken)
         {
-            var endpoint = string.Format(configuration.GetSection("WeatherApi:ApiEndPoint").Value!, lat, lon);
+            var endpointTemplate = Environment.GetEnvironmentVariable("WEATHER_API_ENDPOINT")
+                ?? configuration.GetSection("WeatherApi:ApiEndPoint").Value!;
+            var endpoint = string.Format(endpointTemplate, lat.ToString(), lon.ToString());
             var client = httpClientFactory.CreateClient(HttpClientName.WeatherSerivceClient.ToString());
             var response = await client.GetAsync(endpoint, cancellationToken);
             if (response.IsSuccessStatusCode)
