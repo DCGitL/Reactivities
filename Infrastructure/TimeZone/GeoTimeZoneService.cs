@@ -17,7 +17,7 @@ public class GeoTimeZoneService : IGeoTimeZoneService
         _configuration = configuration;
     }
 
-    public async Task<TimeZoneResponse?> GetTimeZoneResponseAsync(float lat, float lon)
+    public async Task<TimeZoneResponse?> GetTimeZoneResponseAsync(double lat, double lon)
     {
         var client = _clientFactory.CreateClient(HttpClientName.TimezoneServiceClient);
         var endpoint = $"{_configuration.GetSection("Timezone:ApiEndPoint").Value}&lat={lat}&long={lon}";  //"/v2/timezone? apiKey = 56e6788ddcd64f888acda21ee2161451 & lat = 51.5074 & long = -0.1278"

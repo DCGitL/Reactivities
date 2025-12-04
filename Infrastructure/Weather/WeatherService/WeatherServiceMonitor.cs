@@ -14,7 +14,7 @@ namespace Infrastructure.Weather.WeatherService
         private readonly IHttpClientFactory httpClientFactory = httpClientFactory;
         private readonly IConfiguration configuration = configuration;
 
-        public async Task<WeatherResponse?> GetWeatherForcast(float lat, float lon, CancellationToken cancellationToken)
+        public async Task<WeatherResponse?> GetWeatherForcast(double lat, double lon, CancellationToken cancellationToken)
         {
             var endpoint = string.Format(configuration.GetSection("WeatherApi:ApiEndPoint").Value!, lat, lon);
             var client = httpClientFactory.CreateClient(HttpClientName.WeatherSerivceClient.ToString());
@@ -57,7 +57,7 @@ namespace Infrastructure.Weather.WeatherService
             return new System.Globalization.RegionInfo(countryCode).EnglishName;
         }
 
-        private async Task<(string localTime, string geolocation, string standardTimezone)> GetGeolocationLocalTime(float lat, float lon)
+        private async Task<(string localTime, string geolocation, string standardTimezone)> GetGeolocationLocalTime(double lat, double lon)
         {
             var result = await geoTimeZoneService.GetTimeZoneResponseAsync(lat, lon);
             if (result is not null)

@@ -4,5 +4,5 @@ namespace Infrastructure.TimeZone;
 
 public interface IGeoTimeZoneService
 {
-    Task<TimeZoneResponse?> GetTimeZoneResponseAsync(float lat, float lon);
+    Task<TimeZoneResponse?> GetTimeZoneResponseAsync(double lat, double lon);
 }

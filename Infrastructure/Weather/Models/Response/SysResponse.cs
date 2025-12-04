@@ -12,7 +12,7 @@ namespace Infrastructure.Weather.Models.Response
 
     public static class SysResponseExtensions
     {
-        public static SysResponse ToSysResponse(this Sys sys, float lonitude, float latitude)
+        public static SysResponse ToSysResponse(this Sys sys, double lonitude, double latitude)
         {
 
             return new SysResponse

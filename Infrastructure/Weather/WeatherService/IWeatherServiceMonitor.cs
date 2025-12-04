@@ -5,7 +5,7 @@ namespace Infrastructure.Weather.WeatherService
 {
     public interface IWeatherServiceMonitor
     {
-        Task<WeatherResponse?> GetWeatherForcast(float lat, float lon, CancellationToken cancellationToken);
+        Task<WeatherResponse?> GetWeatherForcast(double lat, double lon, CancellationToken cancellationToken);
     }
 
 

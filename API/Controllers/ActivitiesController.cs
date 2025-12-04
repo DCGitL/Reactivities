@@ -62,8 +62,8 @@ public class ActivitiesController(IWeatherServiceMonitor weatherServiceMonitor) 
         var result = await Mediator.Send(new UpdateAttendance.Command { Id = id });
         return HandleResult(result, VerbActions.Post);
     }
-    [HttpGet("{lat:float}/{lon:float}/weather")]
-    public async Task<IActionResult> GetWeather(float lat, float lon, CancellationToken cancellationToken)
+    [HttpGet("{lat}/{lon}/weather")]
+    public async Task<IActionResult> GetWeather(double lat, double lon, CancellationToken cancellationToken)
     {
         var weatherForcast = await weatherServiceMonitor.GetWeatherForcast(lat, lon, cancellationToken);
         if (weatherForcast == null) return NotFound("Unable to fetch weather data at the moment");
