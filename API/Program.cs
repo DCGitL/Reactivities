@@ -26,9 +26,9 @@ using Application.Repository.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var invariantCulture = System.Globalization.CultureInfo.InvariantCulture;
-System.Globalization.CultureInfo.DefaultThreadCurrentCulture = invariantCulture;
-System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = invariantCulture;
+var cultureInfo = new System.Globalization.CultureInfo("en-US");
+System.Globalization.CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 builder.Services.AddControllers(opt =>
 {
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
