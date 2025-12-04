@@ -18,11 +18,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Clean previous build artifacts
-        run: |
-          if exist client\dist rmdir /s /q client\dist
-          if exist "${{env.DOTNET_ROOT}}\myapp" rmdir /s /q "${{env.DOTNET_ROOT}}\myapp"
-
       - name: Set up node.js
         uses: actions/setup-node@v3
         with:
@@ -54,10 +49,6 @@ jobs:
       - name: dotnet publish
         run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
-      - name: Copy React build output to publish directory
-        run: |
-          xcopy /E /I /Y client\dist "${{env.DOTNET_ROOT}}\myapp\client\dist"
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -83,9 +74,6 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4E4FE96CF7F3471095530F4F057BDBC3 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_30A55D52F29449589E5B673747746CDC }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_AAEEAE7809254DD4AC29D7C5695C98A4 }}
-
-      - name: Set ASP.NET Core environment
-        run: echo "ASPNETCORE_ENVIRONMENT=Production" >> $GITHUB_ENV
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
