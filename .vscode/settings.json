@@ -1,3 +1,5 @@
 {
-	"DockerRun.DisableAutoGenerateConfig": true
+	"DockerRun.DisableAutoGenerateConfig": true,
+	"appService.defaultWebAppToDeploy": "/subscriptions/1b1c650d-80b4-40a5-8af3-1ac8944e3789/resourceGroups/reactivities-rg/providers/Microsoft.Web/sites/demoreactivities",
+	"appService.deploySubpath": "API\\bin\\Publish"
 }
