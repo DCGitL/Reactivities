@@ -493,4 +493,4 @@ client/.env.production
 API/migrationscript.sql
 migrationdeployment.sql
 client/.env.development
-API/wwwroot/
+
