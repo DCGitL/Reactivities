@@ -15,17 +15,6 @@ jobs:
     permissions:
       contents: read #This is required for actions/checkout
 
-    # env: # These environment variables are now explicitly replaced in appsettings.json
-    #   CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-    #   CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-    #   CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-
-    #   SMTP_HOST: ${{ secrets.SMTP_HOST }}
-    #   SMTP_PORT: ${{ secrets.SMTP_PORT }}
-    #   CLIENT_APP_URL: ${{ secrets.CLIENT_APP_URL }}
-    #   WEATHER_API_ENDPOINT: ${{ secrets.WEATHER_API_ENDPOINT }}
-    #   TIMEZONE_API_KEY: ${{ secrets.TIMEZONE_API_KEY }}
-
     steps:
       - uses: actions/checkout@v4
 
@@ -39,7 +28,7 @@ jobs:
           echo "VITE_BASE_URL='/api'" > client/.env.production
           echo "VITE_BASE_LOCATION='${{ secrets.VITE_BASE_LOCATION }}'" >> client/.env.production
           echo "VITE_COMMENT_URL='/comments'" >> client/.env.production
-          echo "VITE_GH_CLIENT_ID='${{ secrets.GH_CLIENT_ID }}'" >> client/.env.production
+          echo "VITE_GH_CLIENT_ID='${{ secrets.VITE_GH_CLIENT_ID }}'" >> client/.env.production
           echo "VITE_REDIRECT_URL='https://demoreactivities.azurewebsites.net/auth-callback'" >> client/.env.production
           echo "VITE_GITHUB_OAUTH_URL='https://github.com/login/oauth/authorize'" >> client/.env.production
 
@@ -57,26 +46,6 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
-      - name: Replace appsettings.json placeholders with secrets
-        shell: pwsh
-        run: |
-          $appSettingsPath = "API/appsettings.json" # Adjust path if needed
-          $content = Get-Content $appSettingsPath
-          $content = $content -replace '${GH_CLIENT_ID}', '${{ secrets.GH_CLIENT_ID }}'
-          $content = $content -replace '${GH_CLIENT_SECRET}', '${{ secrets.GH_CLIENT_SECRET }}'
-          # Repeat for other secrets if you want to apply this pattern to all of them
-          $content = $content -replace '${CLOUDINARY_CLOUD_NAME}', '${{ secrets.CLOUDINARY_CLOUD_NAME }}'
-          $content = $content -replace '${CLOUDINARY_API_KEY}', '${{ secrets.CLOUDINARY_API_KEY }}'
-          $content = $content -replace '${CLOUDINARY_API_SECRET}', '${{ secrets.CLOUDINARY_API_SECRET }}'
-          $content = $content -replace '${SMTP_HOST}', '${{ secrets.SMTP_HOST }}'
-          $content = $content -replace '${SMTP_PORT}', '${{ secrets.SMTP_PORT }}'
-          $content = $content -replace '${CLIENT_APP_URL}', '${{ secrets.CLIENT_APP_URL }}'
-          $content = $content -replace '${WEATHER_API_ENDPOINT}', '${{ secrets.WEATHER_API_ENDPOINT }}'
-          $content = $content -replace '${TIMEZONE_API_KEY}', '${{ secrets.TIMEZONE_API_KEY }}'
-          # If DB_CONNECTION_STRING is *not* handled by Azure App Settings, add it here too:
-          # $content = $content -replace '${DB_CONNECTION_STRING}', '${{ secrets.DB_CONNECTION_STRING }}'
-          Set-Content -Path $appSettingsPath -Value $content
-
       - name: dotnet publish
         run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
@@ -92,18 +61,6 @@ jobs:
     permissions:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
-
-    # env: # These environment variables are now explicitly replaced in appsettings.json
-    #   CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-    #   CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-    #   CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-    #   SMTP_HOST: ${{ secrets.SMTP_HOST }}
-    #   SMTP_PORT: ${{ secrets.SMTP_PORT }}
-    #   CLIENT_APP_URL: ${{ secrets.CLIENT_APP_URL }}
-    #   GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
-    #   GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
-    #   WEATHER_API_ENDPOINT: ${{ secrets.WEATHER_API_ENDPOINT }}
-    #   TIMEZONE_API_KEY: ${{ secrets.TIMEZONE_API_KEY }}
 
     steps:
       - name: Download artifact from build job
