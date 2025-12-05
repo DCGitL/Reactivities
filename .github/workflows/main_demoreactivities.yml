@@ -15,17 +15,16 @@ jobs:
     permissions:
       contents: read #This is required for actions/checkout
 
-    env:
-      CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-      CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-      CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+    # env: # These environment variables are now explicitly replaced in appsettings.json
+    #   CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+    #   CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+    #   CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
 
-      SMTP_HOST: ${{ secrets.SMTP_HOST }}
-      SMTP_PORT: ${{ secrets.SMTP_PORT }}
-      CLIENT_APP_URL: ${{ secrets.CLIENT_APP_URL }}
-      # GH_CLIENT_ID and GH_CLIENT_SECRET are not needed here for the backend, but are explicitly used in the replacement step
-      WEATHER_API_ENDPOINT: ${{ secrets.WEATHER_API_ENDPOINT }}
-      TIMEZONE_API_KEY: ${{ secrets.TIMEZONE_API_KEY }}
+    #   SMTP_HOST: ${{ secrets.SMTP_HOST }}
+    #   SMTP_PORT: ${{ secrets.SMTP_PORT }}
+    #   CLIENT_APP_URL: ${{ secrets.CLIENT_APP_URL }}
+    #   WEATHER_API_ENDPOINT: ${{ secrets.WEATHER_API_ENDPOINT }}
+    #   TIMEZONE_API_KEY: ${{ secrets.TIMEZONE_API_KEY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -94,21 +93,17 @@ jobs:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
 
-    env:
-      # These environment variables are NOT needed if secrets are injected into appsettings.json above.
-      # However, if your application also reads directly from environment variables (e.g., Environment.GetEnvironmentVariable),
-      # or if Azure Web App settings override config, these could still be relevant.
-      # For now, keeping them for consistency with the prompt's previous state, but they are redundant if the above replacement is sufficient.
-      CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-      CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-      CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-      SMTP_HOST: ${{ secrets.SMTP_HOST }}
-      SMTP_PORT: ${{ secrets.SMTP_PORT }}
-      CLIENT_APP_URL: ${{ secrets.CLIENT_APP_URL }}
-      GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
-      GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
-      WEATHER_API_ENDPOINT: ${{ secrets.WEATHER_API_ENDPOINT }}
-      TIMEZONE_API_KEY: ${{ secrets.TIMEZONE_API_KEY }}
+    # env: # These environment variables are now explicitly replaced in appsettings.json
+    #   CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+    #   CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+    #   CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+    #   SMTP_HOST: ${{ secrets.SMTP_HOST }}
+    #   SMTP_PORT: ${{ secrets.SMTP_PORT }}
+    #   CLIENT_APP_URL: ${{ secrets.CLIENT_APP_URL }}
+    #   GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+    #   GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
+    #   WEATHER_API_ENDPOINT: ${{ secrets.WEATHER_API_ENDPOINT }}
+    #   TIMEZONE_API_KEY: ${{ secrets.TIMEZONE_API_KEY }}
 
     steps:
       - name: Download artifact from build job
