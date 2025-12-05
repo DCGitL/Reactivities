@@ -23,8 +23,7 @@ jobs:
       SMTP_HOST: ${{ secrets.SMTP_HOST }}
       SMTP_PORT: ${{ secrets.SMTP_PORT }}
       CLIENT_APP_URL: ${{ secrets.CLIENT_APP_URL }}
-      GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
-      GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
+      # GH_CLIENT_ID and GH_CLIENT_SECRET are not needed here for the backend, but are explicitly used in the replacement step
       WEATHER_API_ENDPOINT: ${{ secrets.WEATHER_API_ENDPOINT }}
       TIMEZONE_API_KEY: ${{ secrets.TIMEZONE_API_KEY }}
 
@@ -59,6 +58,26 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
+      - name: Replace appsettings.json placeholders with secrets
+        shell: pwsh
+        run: |
+          $appSettingsPath = "API/appsettings.json" # Adjust path if needed
+          $content = Get-Content $appSettingsPath
+          $content = $content -replace '${GH_CLIENT_ID}', '${{ secrets.GH_CLIENT_ID }}'
+          $content = $content -replace '${GH_CLIENT_SECRET}', '${{ secrets.GH_CLIENT_SECRET }}'
+          # Repeat for other secrets if you want to apply this pattern to all of them
+          $content = $content -replace '${CLOUDINARY_CLOUD_NAME}', '${{ secrets.CLOUDINARY_CLOUD_NAME }}'
+          $content = $content -replace '${CLOUDINARY_API_KEY}', '${{ secrets.CLOUDINARY_API_KEY }}'
+          $content = $content -replace '${CLOUDINARY_API_SECRET}', '${{ secrets.CLOUDINARY_API_SECRET }}'
+          $content = $content -replace '${SMTP_HOST}', '${{ secrets.SMTP_HOST }}'
+          $content = $content -replace '${SMTP_PORT}', '${{ secrets.SMTP_PORT }}'
+          $content = $content -replace '${CLIENT_APP_URL}', '${{ secrets.CLIENT_APP_URL }}'
+          $content = $content -replace '${WEATHER_API_ENDPOINT}', '${{ secrets.WEATHER_API_ENDPOINT }}'
+          $content = $content -replace '${TIMEZONE_API_KEY}', '${{ secrets.TIMEZONE_API_KEY }}'
+          # If DB_CONNECTION_STRING is *not* handled by Azure App Settings, add it here too:
+          # $content = $content -replace '${DB_CONNECTION_STRING}', '${{ secrets.DB_CONNECTION_STRING }}'
+          Set-Content -Path $appSettingsPath -Value $content
+
       - name: dotnet publish
         run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
@@ -76,6 +95,10 @@ jobs:
       contents: read #This is required for actions/checkout
 
     env:
+      # These environment variables are NOT needed if secrets are injected into appsettings.json above.
+      # However, if your application also reads directly from environment variables (e.g., Environment.GetEnvironmentVariable),
+      # or if Azure Web App settings override config, these could still be relevant.
+      # For now, keeping them for consistency with the prompt's previous state, but they are redundant if the above replacement is sufficient.
       CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
       CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
       CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
