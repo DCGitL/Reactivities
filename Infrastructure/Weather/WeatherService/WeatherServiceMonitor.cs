@@ -16,7 +16,7 @@ namespace Infrastructure.Weather.WeatherService
 
         public async Task<WeatherResponse?> GetWeatherForcast(double lat, double lon, CancellationToken cancellationToken)
         {
-            var endpointTemplate = Environment.GetEnvironmentVariable("WEATHER_API_ENDPOINT")
+            var endpointTemplate = Environment.GetEnvironmentVariable("WEATHER_API_ENDPOINT")  // this is taking the value set in azure app service environment settings
                 ?? configuration.GetSection("WeatherApi:ApiEndPoint").Value!;
             var endpoint = string.Format(endpointTemplate, lat.ToString(), lon.ToString());
             var client = httpClientFactory.CreateClient(HttpClientName.WeatherSerivceClient.ToString());
