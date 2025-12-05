@@ -28,7 +28,7 @@ jobs:
           echo "VITE_BASE_URL='/api'" > client/.env.production
           echo "VITE_BASE_LOCATION='${{ secrets.VITE_BASE_LOCATION }}'" >> client/.env.production
           echo "VITE_COMMENT_URL='/comments'" >> client/.env.production
-          echo "VITE_GH_CLIENT_ID='${{ secrets.VITE_GH_CLIENT_ID }}'" >> client/.env.production
+          echo "VITE_GITHUB_CLIENT_ID='${{ secrets.VITE_GITHUB_CLIENT_ID }}'" >> client/.env.production
           echo "VITE_REDIRECT_URL='https://demoreactivities.azurewebsites.net/auth-callback'" >> client/.env.production
           echo "VITE_GITHUB_OAUTH_URL='https://github.com/login/oauth/authorize'" >> client/.env.production
 
